@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- ========================================================================== -->
+    <!-- MyBatis 配置  -->
+    <bean id="dsMybts" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="initialSize" value="10" />
+        <property name="maxIdle" value="20" />
+        <property name="maxActive" value="50" />
+        <property name="maxWait" value="500" />
+        <property name="logAbandoned" value="true" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="60" />
+        <property name="validationQuery" value="SELECT 1" />
+        <property name="testOnBorrow" value="true" />
+        <property name="testOnReturn" value="true" />
+        <property name="testWhileIdle" value="true" />
+        <property name="defaultAutoCommit" value="true" />
+    </bean>
+
+    <!-- sqlSessionFactory -->
+    <bean id="mybtsSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dsMybts" />
+    <property name="configLocation" value="${mybatis.mapper.configuration}" />
+    </bean>
+
+    <bean id="mybtsTemplate"  class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="mybtsSessionFactory" />
+    </bean>
+
+    <!-- scan for mappers and let them be autowired -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="${mybatis.base.package}" />
+        <property name="sqlSessionFactoryBeanName" value="mybtsSessionFactory" />
+    </bean>
+
+    <bean id="mybtsTxManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+     <property name="dataSource" ref="dsMybts" />
+    </bean>
+
+    <aop:config>
+        <aop:pointcut id="mybtsServiceMethods" expression="${aop.pointcut.expression}"/>
+        <aop:advisor advice-ref="mybtsTxAdvice" pointcut-ref="mybtsServiceMethods"/>
+    </aop:config>
+
+    <tx:advice id="mybtsTxAdvice" transaction-manager="mybtsTxManager">
+    <tx:attributes>
+        <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="remove*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="create*" propagation="REQUIRED"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="execute*" propagation="REQUIRED"/>
+            <tx:method name="do*" propagation="REQUIRED"/>
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="fetch*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="search*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+ </beans>

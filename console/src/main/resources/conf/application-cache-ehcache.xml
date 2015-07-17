@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!-- ========================================================== -->
+    <!-- EhCache config -->
+    <bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:conf/ehcache.xml" />
+        <property name="shared" value="true" />
+    </bean>
+
+    <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="ehCacheManager" ref="ehCache" />
+    </bean>
+
+    <!-- annotation 方式和 aop 的方式2选1 -->
+    <cache:annotation-driven cache-manager="ehCacheManager" />
+
+    <cache:advice id="ehCcacheAdvice" cache-manager="ehCacheManager">
+        <cache:caching cache="sysCache">
+            <cache:cacheable method="findSomething" key="#id"/>
+            <cache:cache-evict method="clearCache" all-entries="true"/>
+        </cache:caching>
+    </cache:advice>
+
+    <!-- apply the cacheable behavior to all BookService interfaces -->
+    <aop:config>
+        <aop:advisor advice-ref="ehCcacheAdvice" pointcut="${cache.pointcut.expression}" />
+    </aop:config>
+
+</beans>

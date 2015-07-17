@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias type="com.gcsw.workbench.console.entity.User" alias="SysUser"/>
+        <typeAlias type="com.gcsw.workbench.console.entity.Department" alias="SysDept"/>
+        <typeAlias type="com.gcsw.workbench.console.entity.Role" alias="SysRole"/>
+        <typeAlias type="com.gcsw.workbench.console.entity.Module" alias="SysModule"/>
+        <typeAlias type="com.gcsw.workbench.console.entity.Resource" alias="SysResource"/>
+    </typeAliases>
+    <mappers>
+        <mapper resource="com/gcsw/workbench/console/dao/impl/config/SysUser.xml"/>
+        <mapper resource="com/gcsw/workbench/console/dao/impl/config/SysDepartment.xml"/>
+        <mapper resource="com/gcsw/workbench/console/dao/impl/config/SysRole.xml"/>
+        <mapper resource="com/gcsw/workbench/console/dao/impl/config/SysModule.xml"/>
+        <mapper resource="com/gcsw/workbench/console/dao/impl/config/SysResource.xml"/>
+    </mappers>
+</configuration>

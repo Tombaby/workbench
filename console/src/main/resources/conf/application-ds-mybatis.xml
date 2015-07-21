@@ -51,7 +51,7 @@
     </bean>
 
     <aop:config>
-        <aop:pointcut id="mybtsServiceMethods" expression="${aop.pointcut.expression}"/>
+        <aop:pointcut id="mybtsServiceMethods" expression="${tx.pointcut.expression}"/>
         <aop:advisor advice-ref="mybtsTxAdvice" pointcut-ref="mybtsServiceMethods"/>
     </aop:config>
 

@@ -56,7 +56,7 @@
     </bean>
 
     <aop:config>
-        <aop:pointcut id="hbntServiceMethods" expression="${aop.pointcut.expression}"/>
+        <aop:pointcut id="hbntServiceMethods" expression="${tx.pointcut.expression}"/>
         <aop:advisor advice-ref="hbntTxAdvice" pointcut-ref="hbntServiceMethods"/>
     </aop:config>
 

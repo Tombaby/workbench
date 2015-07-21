@@ -9,14 +9,13 @@
             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.gcsw.workbench.console"/>
+    <context:component-scan base-package="com.gcsw.workbench.console.backend"/>
     <context:property-placeholder location="classpath:conf/system.properties,classpath:conf/jdbc.properties"/>
-    <!-- merge the module config -->
+    <!-- merge the module config
     <import resource="application-cache-ehcache.xml" />
     <import resource="application-ds-hibernate.xml"/>
     <import resource="application-ds-mybatis.xml"/>
+    -->
     <import resource="application-ds-jdbc.xml"/>
-
-
 
 </beans>

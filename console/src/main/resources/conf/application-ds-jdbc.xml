@@ -39,7 +39,7 @@
     </bean>
 
     <aop:config>
-        <aop:pointcut id="jdbcServiceMethods" expression="${aop.pointcut.expression}"/>
+        <aop:pointcut id="jdbcServiceMethods" expression="${tx.pointcut.expression}"/>
         <aop:advisor advice-ref="jdbcTxAdvice" pointcut-ref="jdbcServiceMethods"/>
     </aop:config>
 

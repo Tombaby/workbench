@@ -3,6 +3,8 @@
 *.class
 
 target/
+logs/
+*.log
 
 # Eclipse
 .metadata/

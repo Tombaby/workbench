@@ -13,7 +13,12 @@ public class Department implements Serializable {
     private int parentId;
     private String notes;
     private int leaderId;
-    private int corpId;
+    private String location;
+    private String address;
+    private String tel;
+    private String fax;
+    private String postCode;
+
 
     public int getDeptId() {
         return deptId;
@@ -55,11 +60,43 @@ public class Department implements Serializable {
         this.leaderId = leaderId;
     }
 
-    public int getCorpId() {
-        return corpId;
+    public String getLocation() {
+        return location;
     }
 
-    public void setCorpId(int corpId) {
-        this.corpId = corpId;
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 }

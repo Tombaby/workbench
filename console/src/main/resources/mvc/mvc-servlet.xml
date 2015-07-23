@@ -15,6 +15,12 @@
     <!-- freemarker config -->
     <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
         <property name="templateLoaderPath" value="/WEB-INF/freemarker/" />
+        <property name="freemarkerVariables">
+            <map>
+                <entry key="appbase" value="/console"></entry>
+                <entry key="assets" value="/console/assets"></entry>
+            </map>
+        </property>
     </bean>
 
     <!--

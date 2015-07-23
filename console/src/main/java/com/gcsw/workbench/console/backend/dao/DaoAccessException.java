@@ -7,4 +7,8 @@ public class DaoAccessException extends Exception {
     public DaoAccessException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public DaoAccessException(String message) {
+        super(message);
+    }
 }

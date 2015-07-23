@@ -1,5 +1,7 @@
 package com.gcsw.workbench.console.domain.entity;
 
+import com.gcsw.workbench.console.domain.annotation.Column;
+
 import java.io.Serializable;
 
 /**
@@ -8,11 +10,22 @@ import java.io.Serializable;
 public class User implements Serializable {
     private final static long serialVersionUID = -3148799L;
 
+    @Column(name = "USER_ID", type = Column.DataType.Int, isPrimaryKey = true)
     private int userId;
+
+    @Column(name = "USER_NAME", type = Column.DataType.String)
     private String userName;
+
+    @Column(name = "PASSWORD", type = Column.DataType.String)
     private String password;
+
+    @Column(name = "REAL_NAME", type = Column.DataType.String)
     private String realName;
+
+    @Column(name = "EMAIL", type = Column.DataType.String)
     private String email;
+
+    @Column(name = "DEPT_ID", type = Column.DataType.Int)
     private int deptId;
 
     public int getUserId() {

@@ -1,5 +1,7 @@
 package com.gcsw.workbench.console.domain.entity;
 
+import com.gcsw.workbench.console.domain.annotation.Column;
+
 import java.io.Serializable;
 
 /**
@@ -8,12 +10,25 @@ import java.io.Serializable;
 public class Resource implements Serializable {
     private final static long serialVersionUID = -9275897157L;
 
+    @Column(name = "RES_ID", type = Column.DataType.Int, isPrimaryKey = true)
     private int resId;
+
+    @Column(name = "NAME", type = Column.DataType.String)
     private String name;
+
+    @Column(name = "RES_URI", type = Column.DataType.String)
     private String resURI;
+
+    @Column(name = "RES_CTX", type = Column.DataType.String)
     private String resCtx;
+
+    @Column(name = "NOTES", type = Column.DataType.String)
     private String notes;
+
+    @Column(name = "RES_TYPE", type = Column.DataType.String)
     private String resType;
+
+    @Column(name = "STATUS", type = Column.DataType.Int)
     private int status;
 
     public int getResId() {

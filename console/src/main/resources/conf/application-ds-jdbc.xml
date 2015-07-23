@@ -30,7 +30,7 @@
         <property name="defaultAutoCommit" value="true" />
     </bean>
 
-    <bean id="jdbcTemplate"  class="org.springframework.jdbc.NamedParameterJdbcTemplate">
+    <bean id="jdbcTemplate"  class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
         <constructor-arg index="0" ref="dsJdbc" />
     </bean>
 

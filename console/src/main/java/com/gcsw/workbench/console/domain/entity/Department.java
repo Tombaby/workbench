@@ -1,24 +1,49 @@
 package com.gcsw.workbench.console.domain.entity;
 
+import com.gcsw.workbench.console.domain.annotation.Column;
+import com.gcsw.workbench.console.domain.annotation.Table;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/7/21.
  */
+@Table(name = "CMS_DEPTS")
 public class Department implements Serializable {
     private final static long serialVersionUID = -93749385985L;
 
+    @Column(name = "DEPT_ID", type = Column.DataType.Int, isPrimaryKey = true)
     private int deptId;
+
+    @Column(name = "NAME", type = Column.DataType.String)
     private String name;
+
+    @Column(name = "PARENT_ID", type = Column.DataType.Int)
     private int parentId;
+
+    @Column(name = "NOTES", type = Column.DataType.String)
     private String notes;
+
+    @Column(name = "LEADER_ID", type = Column.DataType.Int)
     private int leaderId;
+
+    @Column(name = "LOCATION", type = Column.DataType.String)
     private String location;
+
+    @Column(name = "ADDRESS", type = Column.DataType.String)
     private String address;
+
+    @Column(name = "TEL", type = Column.DataType.String)
     private String tel;
+
+    @Column(name = "FAX", type = Column.DataType.String)
     private String fax;
+
+    @Column(name = "POST_CODE", type = Column.DataType.String)
     private String postCode;
 
+    private List<User> users;
 
     public int getDeptId() {
         return deptId;
@@ -98,5 +123,13 @@ public class Department implements Serializable {
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

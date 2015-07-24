@@ -3,6 +3,7 @@ package com.gcsw.workbench.console.backend.dao;
 import com.gcsw.workbench.console.domain.annotation.Column;
 import com.gcsw.workbench.console.domain.annotation.Join;
 import com.gcsw.workbench.console.domain.annotation.Table;
+import com.gcsw.workbench.console.utils.DictRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -23,8 +24,31 @@ public class BasicDao<T> {
 
     @Autowired
     protected NamedParameterJdbcTemplate jdbcTemplate;
+
+    private void fillFieldValue(T t, DictRecord<Method, Column.DataType> record, Object value) throws InvocationTargetException, IllegalAccessException {
+        switch(record.getValue()){
+            case String:
+                record.getKey().invoke(t, value.toString());
+                break;
+            case Int:
+                record.getKey().invoke(t, ((Long)value).intValue());
+                break;
+            case DateTime:
+                record.getKey().invoke(t, (Date) value);
+                break;
+            case Number:
+                record.getKey().invoke(t, (Double) value);
+                break;
+            case Bool:
+                record.getKey().invoke(t, (Boolean) value);
+                break;
+            default:
+                record.getKey().invoke(t, value.toString());
+        }
+    }
+
     protected List<T> queryList(Class<T> clazz, String sql, Map<String, ?> params) throws DaoAccessException {
-        Map<String, Method> methods = new HashMap<String, Method>();
+        Map<String, DictRecord> methods = new HashMap<String, DictRecord>();
         Field[] fields = clazz.getDeclaredFields();
         try {
             for(Field field : fields) {
@@ -33,7 +57,7 @@ public class BasicDao<T> {
                     continue;
                 PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
                 Method setter = pd.getWriteMethod();
-                methods.put(column.name(), setter);
+                methods.put(column.name(), new DictRecord<Method, Column.DataType>(setter, column.type()));
             }
         } catch (IntrospectionException e) {
             throw new DaoAccessException("BasicDao.queryForList: can't get the setter!", e);
@@ -48,7 +72,7 @@ public class BasicDao<T> {
                     Object value = row.get(key);
                     if (value == null)
                         continue;
-                    methods.get(key).invoke(t, value);
+                    fillFieldValue(t, methods.get(key), value);
                 }
                 result.add(t);
             }
@@ -77,7 +101,7 @@ public class BasicDao<T> {
 
                 PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
                 Method setter = pd.getWriteMethod();
-                setter.invoke(t, fieldValue);
+                fillFieldValue(t, new DictRecord<Method, Column.DataType>(setter, column.type()), fieldValue);
             }
             return t;
         } catch (InstantiationException e) {

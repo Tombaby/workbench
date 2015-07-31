@@ -43,6 +43,8 @@ public class Department implements Serializable {
     @Column(name = "POST_CODE", type = Column.DataType.String)
     private String postCode;
 
+    private List<Department> children;
+
     private List<User> users;
 
     public int getDeptId() {
@@ -131,5 +133,13 @@ public class Department implements Serializable {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public List<Department> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Department> children) {
+        this.children = children;
     }
 }

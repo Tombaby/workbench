@@ -12,6 +12,6 @@ import java.util.List;
 public class UserDao extends BasicDao<User> {
 
     public List<User> fetchAllUsers() throws DaoAccessException {
-        return this.queryList(User.class, "SELECT USER_ID, USER_NAME, PASSWORD, REAL_NAME, EMAIL, DEPT_ID", null);
+        return this.queryList(User.class, "SELECT USER_ID, USER_NAME, PASSWORD, REAL_NAME, EMAIL, DEPT_ID FROM CMS_USERS", null);
     }
 }

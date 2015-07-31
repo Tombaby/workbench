@@ -27,25 +27,40 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public List<Department> fetchAllDepartments() throws ServiceException {
+    public String fetchAllDepartmentsAsJsonStr() throws ServiceException {
         try {
             List<Department> departments = departmentDao.fetchAllDepartments();
             List<User> users = userDao.fetchAllUsers();
             Map<Integer, Department> temp = new HashMap<Integer, Department>();
+            Department root = new Department();
+            root.setChildren(new ArrayList<Department>());
+            root.setDeptId(0);
+            root.setParentId(-1);
+            root.setName("Thoughtful Organization");
             for(Department dpt : departments){
                 dpt.setUsers(new ArrayList<User>());
                 temp.put(dpt.getDeptId(), dpt);
+                if(dpt.getChildren() == null) {
+                    dpt.setChildren(new ArrayList<Department>());
+                }
+            }
+            for(Department dpt : departments) {
+                Department tdpt = temp.get(dpt.getParentId());
+                if (tdpt == null) {
+                    root.getChildren().add(dpt);
+                } else {
+                    tdpt.getChildren().add(dpt);
+                }
             }
             for(User usr : users) {
                 temp.get(usr.getDeptId()).getUsers().add(usr);
             }
             ObjectMapper objectMapper = new ObjectMapper();
             try {
-                String jsonstr = objectMapper.writeValueAsString(departments);
+                return objectMapper.writeValueAsString(root);
             } catch (JsonProcessingException e) {
                 throw new ServiceException("UserService.fetchAllDepartments: Convert Object to Json error.", e);
             }
-            return departments;
         } catch (DaoAccessException e) {
             throw new ServiceException(e);
         }

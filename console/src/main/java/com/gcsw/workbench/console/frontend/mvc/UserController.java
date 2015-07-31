@@ -19,16 +19,12 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value="/users", method= RequestMethod.GET)
-    public String getUsers(@RequestParam("id") String id, Model model) {
+    public String getUsers(String id, Model model) {
         try {
-            userService.fetchAllDepartments();
+            model.addAttribute("result", userService.fetchAllDepartmentsAsJsonStr());
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-        if (id == null)
-            model.addAttribute("user", "All Users");
-        else
-            model.addAttribute("user", "One User");
         return "welcome";
     }
 

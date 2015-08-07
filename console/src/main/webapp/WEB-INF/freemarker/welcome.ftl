@@ -25,6 +25,21 @@
     padding: 5px;
     border: 1px solid #999;
     background-color: #ccc;
+    overflow: auto;
+}
+.user-panel {
+    margin: 1px;
+    padding: 5px;
+    border: 1px solid #999;
+    background-color: #ccc;
+    overflow: auto;
+}
+.grid-panel {
+    margin: 1px;
+    padding: 5px;
+    border: 1px solid #999;
+    background-color: #ccc;
+    overflow: auto;
 }
 </style>
 </head>
@@ -51,38 +66,53 @@
             <div class="user-col8">
                 <div id="data">
                     <div class="dept-panel">
-                        <form id="dept-frm">                        
-                            <label>Dept ID:</label>
-                            <input name="deptId" type="text"></input>
-                            <label>Name:</label>
-                            <input name="name" type="text"></input>
-                            <label>Parent ID:</label>
-                            <input name="parentId" type="text"></input>
-                            <label>Notes:</label>
-                            <input name="notes" type="text"></input>
-                            <label>Leader ID:</label>
-                            <input name="leaderId" type="text"></input>
-                            <label>Location:</label>
-                            <input name="location" type="text"></input>
-                            <label>Address:</label>
-                            <input name="address" type="text"></input>
-                            <label>Tel:</label>
-                            <input name="tel" type="text"></input>
-                            <label>Fax:</label>
-                            <input name="fax" type="text"></input>
-                            <label>Post Code:</label>
-                            <input name="postCode" type="text"></input>
+                        <form id="dept-frm">
+                            <table>
+                            <tr><td colspan="8"><strong>Department Info:</strong></td></tr>
+                            <tr>
+                                <td><label>Dept ID:</label></td><td><input name="deptId" type="text"></input></td>
+                                <td><label>Name:</label></td><td><input name="name" type="text"></input></td>
+                                <td><label>Parent ID:</label></td><td><input name="parentId" type="text"></input></td>
+                                <td><label>Notes:</label></td><td><input name="notes" type="text"></input></td>
+                            </tr>
+                            <tr>
+                                <td><label>Leader ID:</label></td><td><input name="leaderId" type="text"></input></td>
+                                <td><label>Location:</label></td><td><input name="location" type="text"></input></td>
+                                <td><label>Address:</label></td><td><input name="address" type="text"></input></td>
+                                <td><label>Tel:</label></td><td><input name="tel" type="text"></input></td>
+                            </tr>
+                            <tr>
+                                <td><label>Fax:</label></td><td><input name="fax" type="text"></input></td>
+                                <td><label>Post Code:</label></td><td><input name="postCode" type="text"></input></td>
+                            </table>
+                            </tr>
                         </form>
                     </div>
+                    <!--
                     <hr />
                     <div class="user-panel">
                         <form id="user-frm">
-                        
+                            <table>
+                            <tr><td colspan="8"><strong>User Info:</strong></td></tr>
+                            <tr>
+                                <td><label>User ID:</label></td><td><input name="userId" type="text"></input></td>
+                                <td><label>User Name:</label></td><td><input name="userName" type="text"></input></td>
+                                <td><label>Password:</label></td><td><input name="password" type="text"></input></td>
+                                <td><label>Real Name:</label></td><td><input name="realName" type="text"></input></td>
+                            </tr>
+                            <tr>
+                                <td><label>Email:</label></td><td><input name="email" type="text"></input></td>
+                                <td><label>Dept ID:</label></td><td><input name="deptId" type="text"></input></td>
+                            </tr>
+                            </table>
                         </form>
                     </div>
+                    -->
                     <hr />
-                    <table id="datagrid"></table>
-                    <div id="datagrid-bar"></div>
+                    <div class="grid-panel">
+                        <table id="datagrid"></table>
+                        <div id="datagrid-bar"></div>
+                    </div>
                 </div>        
             </div>
         </div>
@@ -107,18 +137,31 @@ function buildTreeNodes(treenodes) {
     }
 }
 
-function getUsersByDeptId(treenodes,id){
+function getDeptInfoByDeptId(treenodes, id) {
     var result = undefined;
     for(var i=0; i<treenodes.length; i++){
         if(treenodes[i].id==id){
-            result = treenodes[i].users;
+            result = treenodes[i];
             break;
         } 
-        result = getUsersByDeptId(treenodes[i].children, id);
+        result = getDeptInfoByDeptId(treenodes[i].children, id);
         if (result != undefined)
             break;
     }
     return result;
+}
+
+function fillDeptInfoPanel(data) {
+    $('#dept-frm input[name="deptId"]').val(data['deptId']);
+    $('#dept-frm input[name="name"]').val(data['name']);
+    $('#dept-frm input[name="parentId"]').val(data['parentId']);
+    $('#dept-frm input[name="notes"]').val(data['notes']);
+    $('#dept-frm input[name="leaderId"]').val(data['leaderId']);
+    $('#dept-frm input[name="location"]').val(data['location']);
+    $('#dept-frm input[name="address"]').val(data['address']);
+    $('#dept-frm input[name="tel"]').val(data['tel']);
+    $('#dept-frm input[name="fax"]').val(data['fax']);
+    $('#dept-frm input[name="postCode"]').val(data['postCode']);
 }
 
 function fillDataGrid(data){
@@ -158,8 +201,13 @@ $('#treeview').jstree({
 }).on('select_node.jstree', function(e,data){
     var deptid = data.node.id;
     console.log(deptid);
-    var users = getUsersByDeptId(treenodes, deptid);
-    console.log(users);    
+    var deptInfo = getDeptInfoByDeptId(treenodes, deptid);
+    if(deptInfo==undefined) {
+        return false;
+    }
+    var users = deptInfo['users'];
+    console.log(users);
+    fillDeptInfoPanel(deptInfo);
     fillDataGrid(users);
 
 });

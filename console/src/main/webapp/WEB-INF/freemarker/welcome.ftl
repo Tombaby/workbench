@@ -173,25 +173,6 @@ function fillDataGrid(data){
     $("#grid_id").setGridParam({rowNum:data.length}).trigger("reloadGrid");
 }
 
-$("#datagrid").jqGrid({
-    datatype: "local",
-    height: 300,
-    autowidth: true,
-    colNames:['UserID','Name', 'RealName', 'Email','Password'],
-    colModel:[
-        {name:'userId',index:'userId', width:100, sorttype:"int"},
-        {name:'name',index:'name', width:120},
-        {name:'realName',index:'realName', width:150},
-        {name:'email',index:'email', width:150},
-        {name:'password',index:'password', width:120}
-    ],
-    multiselect: false,
-    pager: '#datagrid-bar',
-    caption: "User List"
-});
-$("#datagrid").jqGrid('navGrid', '#datagrid-bar', {});
-
-
 var treenodes = [${result}];
 buildTreeNodes(treenodes);
 $('#treeview').jstree({
@@ -212,6 +193,66 @@ $('#treeview').jstree({
 
 });
 
+var lastsel = null;
+$("#datagrid").jqGrid({
+    datatype: "local",
+    height: 300,
+    autowidth: true,
+    colNames:['UserID','Name', 'RealName', 'Email','Password', 'DepartmentID'],
+    colModel:[
+        {name:'userId',index:'userId', width:100, sorttype:"int", editable:false },
+        {name:'name',index:'name', width:120, editable:true, edittype:'text', editrules:{number:false}},
+        {name:'realName',index:'realName', width:150, editable:true, edittype:'text', editrules:{required:true}, editoptions:{axlength:30}},
+        {name:'email',index:'email', width:150, editable:true, edittype:'text', editrules:{required:true, email:true}, editoptions:{axlength:120}},
+        {name:'password',index:'password', width:120, editable:true, edittype:'text', editrules:{required:true}},
+        {name:'deptId',index:'deptId', width:120, editable:false}
+    ],
+    toolbar: [true,"top"],
+    multiselect: false,
+    pager: '#datagrid-bar',
+    caption: "User List",
+    cellEdit: true,
+    cellsubmit: 'clientArray',
+    afterEditCell: function (id,name,val,iRow,iCol){
+		if(name=='password') {
+			jQuery("#"+iRow+"_password","#datagrid").datepicker({dateFormat:"yy-mm-dd"});
+		}
+	},
+    afterSaveCell : function(id,name,val,iRow,iCol) {
+        //alert(id);
+        var row = $('#datagrid').jqGrid('getLocalRow',id);
+        alert(row['name']);
+    }
+});
+$("#datagrid").jqGrid('navGrid', '#datagrid-bar', {edit:false, del:false, add:false});
+$("#t_datagrid").append('<button id="tbBtnAdd" class="ui-button ui-widget ui-state-default ui-button-text-icon-primary" role="button"><span class="ui-button-icon-primary ui-icon ui-icon-locked"></span><span class="ui-button-text">Add</span></button><button id="tbBtnDelete" class="ui-button ui-widget ui-state-default ui-button-text-icon-primary" role="button"><span class="ui-button-icon-primary ui-icon ui-icon-locked"></span><span class="ui-button-text">Delete</span></button><button id="tbBtnSave" class="ui-button ui-widget ui-state-default ui-button-text-icon-primary" role="button"><span class="ui-button-icon-primary ui-icon ui-icon-locked"></span><span class="ui-button-text">Save</span></button>');
+$("#tbBtnAdd","#t_datagrid").click(function(){
+	var ids = $("#datagrid").jqGrid('getDataIDs');
+    var rowid = (ids.length ==0 ? 1: Math.max.apply(Math,ids)+1);
+    var newrow = {userId:-1, name:"user", realName:"user", email:"xxx@xxx.com", password:"123", deptId:$('#dept-frm input[name="deptId"]').val()};
+    $('#datagrid').jqGrid('addRowData', rowid, newrow);
+    var deptInfo = getDeptInfoByDeptId(treenodes, newrow.deptId);
+    if(deptInfo==undefined) {
+        return false;
+    }
+    deptInfo['users'].push(newrow);
+});
+
+$("#tbBtnDelete","#t_datagrid").click(function(){
+	var id = $('#datagrid').jqGrid('getGridParam', 'selrow');
+    var row = $('#datagrid').jqGrid('getLocalRow',id);
+    $('#datagrid').jqGrid('delRowData', id);
+    var deptInfo = getDeptInfoByDeptId(treenodes, row.deptId);
+    if(deptInfo==undefined) {
+        return false;
+    }
+    for(var i = 0; i<deptInfo['users'].length; i++) {
+        if(deptInfo['users'][i].userId == row.userId) {
+            deptInfo['users'].splice(i, 1);
+            break;
+        }
+    }
+});
 
 
 </script>
